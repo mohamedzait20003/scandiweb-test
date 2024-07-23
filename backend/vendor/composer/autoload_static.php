@@ -37,10 +37,6 @@ class ComposerStaticInitcae78ffbd2d34190526d1fe03fdf4404
         array (
             'Dotenv\\' => 7,
         ),
-        'C' => 
-        array (
-            'Controller\\' => 11,
-        ),
         'A' => 
         array (
             'App\\' => 4,
@@ -79,10 +75,6 @@ class ComposerStaticInitcae78ffbd2d34190526d1fe03fdf4404
         'Dotenv\\' => 
         array (
             0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
-        ),
-        'Controller\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src/Controller',
         ),
         'App\\' => 
         array (

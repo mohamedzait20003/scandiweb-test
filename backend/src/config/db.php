@@ -1,5 +1,5 @@
 <?php
-require "vendor/autoload.php";
+namespace App\Config;
 use Dotenv\Dotenv;
 
 class DB {

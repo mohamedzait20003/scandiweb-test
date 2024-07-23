@@ -1,9 +1,6 @@
 <?php
 namespace App\Controller;
 
-use App\Schema\CategorySchema;
-use App\Schema\ProductSchema;
-
 use GraphQL\GraphQL as GraphQLBase;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -11,6 +8,9 @@ use GraphQL\Type\Schema;
 use GraphQL\Type\SchemaConfig;
 use RuntimeException;
 use Throwable;
+
+use App\Schema\CategorySchema;
+use App\Schema\ProductSchema;
 
 class GraphQL {
     static public function handle() {
@@ -52,7 +52,8 @@ class GraphQL {
         }
 
         header('Content-Type: application/json; charset=UTF-8');
-        return json_encode($output);
+        echo json_encode($output);
+        exit();
     }
 }
 ?>

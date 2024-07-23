@@ -1,44 +1,56 @@
 // Libraries
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import axios from 'axios';
 
 // Components
 import './App.css';
 import Header from './components/Header';
-import Category from './pages/Category';
+import Category from './components/Category';
 
 function App() {
   const [categories, setCategories] = useState([]);
 
   const fetchCategories = async () => {
-    const query = `
-        {
-          categories {
-            name
-            __typename
-          }
-        }
-      `;
-
-    try{
-      const response = await axios.post('http://localhost:8000/graphql', {
-        query: query,
-      },{
+    try {
+      const response = await fetch('http://localhost:8000/graphql', {
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `
+            query {
+              categories {
+                id
+                name
+                __typename
+              }
+            }
+          `,
+        }),
       });
 
-      if(response.data.errors){
-        console.log(response.data.errors);
-      } else{
-        console.log(response.data.data.categories);
-        setCategories(response.data.data.categories);
+      const text = await response.text();
+      console.log('Raw response:', text); // Debugging line
+
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch (parseError) {
+        console.log('Failed to parse JSON response:', text); // Enhanced logging
+        throw new Error('Failed to parse JSON response');
+      }
+      console.log('Parsed result:', result); // Debugging line
+
+      if (result.errors) {
+        console.log(result.errors[0].message);
+      } else if (result.data && result.data.categories) {
+        setCategories(result.data.categories);
+      } else {
+        throw new Error('Invalid response structure');
       }
     } catch (err) {
-      console.log(err);
-    }
+      console.log(err.message);
+    } 
   };
 
   useEffect(() => {
@@ -49,11 +61,7 @@ function App() {
     <>
       <Header categories={categories} />
       <main>
-        <Routes>
-          {categories.map((category) => (
-            <Route key={category.id} path={`/${category.name}`} element={<Category category={category} />} />
-          ))}
-        </Routes>
+        
       </main>
     </>
   );
