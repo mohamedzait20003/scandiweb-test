@@ -1,6 +1,8 @@
 <?php
-require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'db.php';
-require '.\abstractschema.php';
+namespace App\Schema;
+
+use App\Config\DB;
+use App\Schema\AbstractSchema;
 
 
 use GraphQL\Type\Definition\ObjectType;

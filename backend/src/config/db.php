@@ -1,4 +1,7 @@
 <?php
+require "vendor/autoload.php";
+use Dotenv\Dotenv;
+
 class DB {
     private static $conn = null;
 

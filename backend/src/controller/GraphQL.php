@@ -1,25 +1,16 @@
 <?php
+namespace App\Controller;
+
+use App\Schema\CategorySchema;
+use App\Schema\ProductSchema;
+
 use GraphQL\GraphQL as GraphQLBase;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Type\SchemaConfig;
-
-$categorySchemaPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'schema' . DIRECTORY_SEPARATOR . 'category.php';
-$productSchemaPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'schema' . DIRECTORY_SEPARATOR . 'product.php';
-
-error_log("Checking path: $categorySchemaPath");
-error_log("Checking path: $productSchemaPath");
-
-if (!file_exists($categorySchemaPath)) {
-    throw new RuntimeException("File not found: $categorySchemaPath");
-}
-
-if (!file_exists($productSchemaPath)) {
-    throw new RuntimeException("File not found: $productSchemaPath");
-}
-
-require_once $categorySchemaPath;
-require_once $productSchemaPath;
+use RuntimeException;
+use Throwable;
 
 class GraphQL {
     static public function handle() {
