@@ -1,49 +1,39 @@
 <?php
 namespace App\Controller;
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use GraphQL\GraphQL as GraphQLBase;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Schema;
-use GraphQL\Type\SchemaConfig;
 use RuntimeException;
 use Throwable;
 
 use App\Schema\CategorySchema;
-use App\Schema\ProductSchema;
 
 class GraphQL {
     static public function handle() {
         try {
             $categorySchema = new CategorySchema();
-            $productSchema = new ProductSchema();
-
-            $queryType = new ObjectType([
-                'name' => 'Query',
-                'fields' => array_merge(
-                    $categorySchema->getQueryType()->getFields(),
-                    $productSchema->getQueryType()->getFields()
-                )
-            ]);
-
-            $schema = new Schema(
-                (new SchemaConfig())
-                ->setQuery($queryType)
-            );
+            $schema = $categorySchema->getSchema();
 
             $rawInput = file_get_contents('php://input');
             if ($rawInput === false) {
                 throw new RuntimeException('Failed to get php://input');
             }
 
+            error_log('Raw input: ' . $rawInput); // Log raw input
+
             $input = json_decode($rawInput, true);
             $query = $input['query'];
             $variableValues = $input['variables'] ?? null;
 
+            error_log('Executing query: ' . $query); // Log the query
+
             $rootValue = ['prefix' => 'You said: '];
             $result = GraphQLBase::executeQuery($schema, $query, $rootValue, null, $variableValues);
             $output = $result->toArray();
+
+            error_log('Query result: ' . json_encode($output)); // Log the result
         } catch (Throwable $e) {
+            error_log('Error: ' . $e->getMessage()); // Log the error
             $output = [
                 'error' => [
                     'message' => $e->getMessage(),

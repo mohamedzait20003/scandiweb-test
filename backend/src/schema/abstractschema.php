@@ -7,12 +7,9 @@ use GraphQL\Type\Schema;
 use GraphQL\GraphQL;
 
 abstract class AbstractSchema {
-    abstract protected function getQueryType(): ObjectType;
+    protected $queryType;
+    protected $mutationType;
 
-    public function getSchema(): Schema {
-        return new Schema([
-            'query' => $this->getQueryType(),
-        ]);
-    }
+    abstract public function getSchema(): Schema;
 }
 ?>

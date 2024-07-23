@@ -5,23 +5,21 @@ use Dotenv\Dotenv;
 use mysqli;
 
 class DB {
-    private static $conn = null;
+    private static $conn;
 
-    public function __construct() {
-        if (self::$conn === null) {
-            $dotenv = Dotenv::createImmutable(__DIR__ . '/../..');
-            $dotenv->load();
+    private function __construct() {
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../..');
+        $dotenv->load();
 
-            $host = $_ENV['DB_HOST'];
-            $user = $_ENV['DB_USER'];
-            $pass = $_ENV['DB_PASS'];
-            $name = $_ENV['DB_NAME'];
-            $port = $_ENV['DB_PORT'];
+        $host = $_ENV['DB_HOST'];
+        $user = $_ENV['DB_USER'];
+        $pass = $_ENV['DB_PASS'];
+        $name = $_ENV['DB_NAME'];
+        $port = $_ENV['DB_PORT'];
 
-            self::$conn = new mysqli($host, $user, $pass, $name, $port);
-            if (self::$conn->connect_error) {
-                die('Connect Error (' . self::$conn->connect_errno . ') ' . self::$conn->connect_error);
-            }
+        self::$conn = new mysqli($host, $user, $pass, $name, $port);
+        if (self::$conn->connect_error) {
+            throw new \Exception('Database connection error: ' . self::$conn->connect_error);
         }
     }
 
@@ -33,10 +31,9 @@ class DB {
     }
 
     public static function closeConnection() {
-        if (self::$connection) {
-            self::$connection->close();
-            self::$connection = null;
+        if (self::$conn) {
+            self::$conn->close();
+            self::$conn = null;
         }
     }
 }
-?>

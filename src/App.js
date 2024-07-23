@@ -1,57 +1,40 @@
 // Libraries
 import React, { useState, useEffect } from 'react';
+import { request, gql } from 'graphql-request';
+import { Routes, Route } from 'react-router-dom';
 
 // Components
 import './App.css';
 import Header from './components/Header';
-import Category from './components/Category';
+import Category from './pages/Category';
 
 function App() {
   const [categories, setCategories] = useState([]);
 
   const fetchCategories = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: `
-            query {
-              categories {
-                id
-                name
-                __typename
-              }
-            }
-          `,
-        }),
-      });
-
-      const text = await response.text();
-      console.log('Raw response:', text); // Debugging line
-
-      let result;
-      try {
-        result = JSON.parse(text);
-      } catch (parseError) {
-        console.log('Failed to parse JSON response:', text); // Enhanced logging
-        throw new Error('Failed to parse JSON response');
+    const endpoint = 'http://localhost:8000/graphql';
+    const query = gql`
+      {
+        categories {
+          id
+          name
+        }
       }
-      console.log('Parsed result:', result); // Debugging line
-
-      if (result.errors) {
-        console.log(result.errors[0].message);
-      } else if (result.data && result.data.categories) {
-        setCategories(result.data.categories);
-      } else {
-        throw new Error('Invalid response structure');
+    `;
+    
+    request(endpoint, query)
+    .then(
+      data => {
+        if (data && data.categories) {
+          setCategories(data.categories);
+        } else {
+          console.error('Categories data is undefined');
+        }
       }
-    } catch (err) {
-      console.log(err.message);
-    } 
+    )
+    .catch(error => console.error(error));
   };
+  
 
   useEffect(() => {
     fetchCategories();
@@ -60,9 +43,15 @@ function App() {
   return (
     <>
       <Header categories={categories} />
-      <main>
-        
-      </main>
+      <Routes>
+        {categories.map((category) => (
+          <Route
+            key={category.id}
+            path={`/${category.name}`}
+            element={<Category category={category} />}
+          />
+        ))}
+      </Routes>
     </>
   );
 }

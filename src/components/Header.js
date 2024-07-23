@@ -9,14 +9,18 @@ import Cart from '../assets/Shop Cart/Cart.svg'
 const Header = ({ categories }) => {
   return (
     <header className='h-16 bg-white shadow-sm'>
-      <div className='h-full container mx-auto flex items-center justify-between px-4'>
-        <div className=''>
+      <div className='h-full container mx-auto flex items-center justify-between'>
+        <ul className='flex items-center list-none gap-12'>
           {categories.map((category) => (
-            <Link key={category.id} to={`/${category.name}`} className='text-lg text-gray-900 font-semibold'>{category.name}</Link>
+            <li>
+              <Link key={category.id} to={`/${category.name}`} className='text-lg text-gray-900 font-semibold'>
+                {category.name}
+              </Link>
+            </li>
           ))}
-        </div>
-        <div className=''>
-            <Link to={"/"} className='flex flex-row items-center justify-start space-x-2'>
+        </ul>
+        <div className='relative flex items-center'>
+            <Link to={"/All"} className='flex flex-row items-center justify-start space-x-2'>
                 <img className='w-16 h-10' src={Logo} alt="ZCommerce Logo" />
             </Link>
         </div>
