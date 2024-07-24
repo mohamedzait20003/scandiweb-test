@@ -25,6 +25,8 @@ function App() {
     request(endpoint, query)
     .then(
       data => {
+        console.log(data);
+        console.log(data.categories);
         if (data && data.categories) {
           setCategories(data.categories);
         } else {
@@ -44,6 +46,7 @@ function App() {
     <>
       <Header categories={categories} />
       <Routes>
+        <Route path="/" element={<Category category={{ id: 3, name: 'All' }} />} />
         {categories.map((category) => (
           <Route
             key={category.id}

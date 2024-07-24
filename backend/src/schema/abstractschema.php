@@ -10,6 +10,7 @@ abstract class AbstractSchema {
     protected $queryType;
     protected $mutationType;
 
-    abstract public function getSchema(): Schema;
+    abstract public function getQueryType(): ObjectType;
+    abstract public function getMutationType(): ObjectType;
 }
 ?>

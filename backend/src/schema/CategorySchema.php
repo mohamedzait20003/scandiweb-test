@@ -50,10 +50,11 @@ class CategorySchema extends AbstractSchema {
         $this->mutationType = null;
     }
 
-    public function getSchema(): Schema {
-        return new Schema([
-            'query' => $this->queryType,
-            'mutation' => $this->mutationType,
-        ]);
+    public function getQueryType(): ObjectType {
+        return $this->queryType;
+    }
+
+    public function getMutationType(): ObjectType {
+        return $this->mutationType;
     }
 }
