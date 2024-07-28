@@ -1,12 +1,18 @@
-// Libraries
+// App.js
 import React, { useState, useEffect } from 'react';
 import { request, gql } from 'graphql-request';
 import { Routes, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
-// Components
+import MainCategory from './pages/MainCategory';
+import Category from './pages/Category';
+import Product from './pages/Product';
+
 import './App.css';
 import Header from './components/Header';
-import Category from './pages/Category';
+import Cart from './components/Cart';
+
+import store from './store/store';
 
 function App() {
   const [categories, setCategories] = useState([]);
@@ -17,7 +23,7 @@ function App() {
       {
         categories {
           id
-          name
+          name  
         }
       }
     `;
@@ -43,19 +49,21 @@ function App() {
   }, []);
 
   return (
-    <>
+    <Provider store={store}>
       <Header categories={categories} />
+      <Cart />
       <Routes>
-        <Route path="/" element={<Category category={{ id: 3, name: 'All' }} />} />
+        <Route path="/" element={<MainCategory />} />
         {categories.map((category) => (
           <Route
-            key={category.id}
-            path={`/${category.name}`}
+            key={category.Id}
+            path={`/${category.name}`} 
             element={<Category category={category} />}
           />
         ))}
+        <Route path='product/:productId' element={<Product />} />
       </Routes>
-    </>
+    </Provider>
   );
 }
 

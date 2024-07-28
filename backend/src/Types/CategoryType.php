@@ -4,7 +4,7 @@ namespace App\Types;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
-class CategoryType extends AbstractType {
+class CategoryType extends ObjectType {
     public function __construct() {
         $config = [
             'name' => 'Category',

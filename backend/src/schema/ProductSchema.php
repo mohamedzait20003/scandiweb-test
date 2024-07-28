@@ -1,13 +1,14 @@
 <?php
 namespace App\Schema;
-
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Config\DB;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Schema;
+use GraphQL\Error\UserError;
+
 use App\Types\ProductType;
+use App\Types\OrderType;
 
 class ProductSchema extends AbstractSchema {
     protected $queryType;
@@ -17,97 +18,86 @@ class ProductSchema extends AbstractSchema {
         $this->queryType = new ObjectType([
             'name' => 'Query',
             'fields' => [
-                'products' => [
+                'Products' => [
                     'type' => Type::listOf(new ProductType()),
                     'args' => [
-                        'category' => Type::string(),
+                        'category_id' => Type::int()
                     ],
                     'resolve' => function($root, $args) {
-                        try {
-                            $mysqli = DB::getConnection();
-                            if (!$mysqli) {
-                                throw new \Exception('Failed to connect to the database');
-                            }
-
-                            $category = $args['category'] ?? 'All';
-                            error_log('Category argument: ' . $category);
-
-                            if ($category === 'All') {
-                                $query = 'SELECT p.*, g.image_url, a.name AS attribute_name, a.type AS attribute_type, asi.displayValue, asi.value, pr.amount, pr.currency_label
-                                        FROM products p
-                                        LEFT JOIN galleries g ON p.id = g.product_id
-                                        LEFT JOIN attributes_set a ON p.id = a.product_id
-                                        LEFT JOIN attribute_set_items asi ON a.id = asi.attribute_id
-                                        LEFT JOIN prices pr ON p.id = pr.product_id';
-                                error_log('Executing query for all products: ' . $query);
-                                $stmt = $mysqli->prepare($query);
-                            } else {
-                                $query = 'SELECT p.*, g.image_url, a.name AS attribute_name, a.type AS attribute_type, asi.displayValue, asi.value, pr.amount, pr.currency_label
-                                        FROM products p
-                                        LEFT JOIN galleries g ON p.id = g.product_id
-                                        LEFT JOIN attributes_set a ON p.id = a.product_id
-                                        LEFT JOIN attribute_set_items asi ON a.id = asi.attribute_id
-                                        LEFT JOIN prices pr ON p.id = pr.product_id
-                                        WHERE p.category_id = (SELECT id FROM categories WHERE name = ?)';
-                                error_log('Executing query for category: ' . $query);
-                                $stmt = $mysqli->prepare($query);
-                                $stmt->bind_param('s', $category);
-                            }
-
-                            $stmt->execute();
-                            $result = $stmt->get_result();
-
-                            $products = [];
-                            while ($row = $result->fetch_assoc()) {
-                                $productId = $row['id'];
-                                if (!isset($products[$productId])) {
-                                    $products[$productId] = [
-                                        'id' => $row['id'],
-                                        'name' => $row['name'],
-                                        'inStock' => $row['inStock'],
-                                        'description' => $row['description'],
-                                        'category_id' => $row['category_id'],
-                                        'brand' => $row['brand'],
-                                        'images' => [],
-                                        'attributes' => [],
-                                        'price' => null // Initialize price as null
-                                    ];
-                                }
-
-                                if ($row['image_url']) {
-                                    $products[$productId]['images'][] = $row['image_url'];
-                                }
-
-                                if ($row['attribute_name']) {
-                                    $products[$productId]['attributes'][] = [
-                                        'name' => $row['attribute_name'],
-                                        'type' => $row['attribute_type'],
-                                        'displayValue' => $row['displayValue'],
-                                        'value' => $row['value']
-                                    ];
-                                }
-
-                                if ($row['amount']) {
-                                    $products[$productId]['price'] = [
-                                        'amount' => $row['amount'],
-                                        'currency_label' => $row['currency_label']
-                                    ];
-                                }
-                            }
-
-                            $stmt->close();
-                            return array_values($products);
-
-                        } catch (\Exception $e) {
-                            error_log('Error: ' . $e->getMessage());
-                            return null;
-                        }
+                        return $this->fetchProducts($args['category_id'] ?? null);
                     }
                 ]
             ]
         ]);
 
-        $this->mutationType = null;
+        $this->mutationType = new ObjectType([
+            'name' => 'Mutation',
+            'fields' => [
+                'createProduct' => [
+                    'type' => new OrderType(),
+                    'args' => [
+                        // Define arguments here
+                    ],
+                    'resolve' => function($root, $args) {
+                        // Define resolve function here
+                    }
+                ]
+            ]
+        ]);
+    }
+
+    private function fetchProducts($category_id = null) {
+        $mysqli = null;
+        try {
+            $mysqli = DB::getConnection();
+            if (!$mysqli) {
+                throw new \Exception('Failed to connect to the database');
+            }
+    
+            $query = 'SELECT Id, name, inStock, description, brand FROM product';
+            if ($category_id) {
+                $category_id = $mysqli->real_escape_string($category_id);
+                $query .= " WHERE category_id = '$category_id'";
+            }
+    
+            $result = $mysqli->query($query);
+            if (!$result) {
+                throw new \Exception('Database query error: ' . $mysqli->error);
+            }
+    
+            $products = [];
+            while($row = $result->fetch_assoc()){
+                $productId = $row['Id'];
+    
+                $galleryResult = $mysqli->query("SELECT id, image_url FROM gallery WHERE product_id = '" . $mysqli->real_escape_string($productId) . "'");
+                if (!$galleryResult) {
+                    throw new \Exception('Gallery query error: ' . $mysqli->error);
+                }
+                $galleryItems = [];
+                while ($galleryRow = $galleryResult->fetch_assoc()) {
+                    $galleryItems[] = $galleryRow;
+                }
+                $row['gallery'] = $galleryItems;
+    
+                $priceResult = $mysqli->query("SELECT id, amount, currency_label, currency_symbol FROM price WHERE product_id = '" . $mysqli->real_escape_string($productId) . "'");
+                if (!$priceResult) {
+                    throw new \Exception('Price query error: ' . $mysqli->error);
+                }
+                $priceRow = $priceResult->fetch_assoc();
+                $row['price'] = $priceRow;
+    
+                $products[] = $row;
+            }
+    
+            return $products;
+        } catch (\Exception $e) {
+            error_log('Error: ' . $e->getMessage());
+            throw new UserError('Internal server error: ' . $e->getMessage());
+        } finally {
+            if ($mysqli && $mysqli->ping()) {
+                DB::closeConnection();
+            }
+        }
     }
 
     public function getQueryType(): ObjectType {
@@ -118,4 +108,3 @@ class ProductSchema extends AbstractSchema {
         return $this->mutationType;
     }
 }
-?>

@@ -4,13 +4,13 @@ namespace App\Types;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
-class AttributeSetItemType extends AbstractType {
+class OrderType extends ObjectType {
     public function __construct() {
         $config = [
-            'name' => 'AttributeSetItem',
+            'name' => 'Category',
             'fields' => [
-                'displayValue' => Type::string(),
-                'value' => Type::string(),
+                'id' => Type::nonNull(Type::id()),
+                'name' => Type::nonNull(Type::string()),
             ],
         ];
         parent::__construct($config);

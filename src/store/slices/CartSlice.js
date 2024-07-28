@@ -1,3 +1,4 @@
+// Redux Library
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -5,6 +6,7 @@ const initialState = {
     cartItems: [],
 };
 
+// Cart Slice
 const CartSlice = createSlice({
     name: "cart",
     initialState,
@@ -31,8 +33,8 @@ const CartSlice = createSlice({
         },
         incrementItem: (state, action) => {
             state.cartItems = state.cartItems.map(item => {
-                if (item.id === action.payload.id) {
-                    return { ...item, quantity: item.quantity + 1 };
+                if (item.id === action.payload) {
+                   item.quantity++;
                 }
                 return item;
             });
@@ -40,10 +42,13 @@ const CartSlice = createSlice({
         decrementItem: (state, action) => {
             state.cartItems = state.cartItems.map(item => {
                 if (item.id === action.payload.id) {
-                    return { ...item, quantity: item.quantity - 1 };
+                    item.quantity--;
                 }
-                return item;
-            });
+            })
+            .filer(item => item.quantity === 0);
         },
     },
 });
+
+export const { toogleCart, addItem, removeItem, incrementItem, decrementItem } = CartSlice.actions;
+export default CartSlice.reducer;

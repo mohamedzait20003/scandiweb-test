@@ -1,26 +1,38 @@
 <?php 
 namespace App\Types;
 
-use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\ObjectType;
 
-class ProductType extends AbstractType {
+class ProductType extends ObjectType {
     public function __construct() {
         $config = [
-            'name' => 'Product',
             'fields' => [
-                'id' => Type::nonNull(Type::id()),
+                'Id' => Type::nonNull(Type::id()),
                 'name' => Type::nonNull(Type::string()),
                 'inStock' => Type::nonNull(Type::boolean()),
                 'description' => Type::string(),
-                'category_id' => Type::int(),
                 'brand' => Type::string(),
-                'galleries' => Type::listOf(new GalleryType()),
-                'price' => new PriceType(),
-                'attributeSets' => Type::listOf(new AttributeSetType()),
+                'gallery' => Type::listOf(new ObjectType([
+                    'name' => 'Image',
+                    'fields' => [
+                        'id' => Type::nonNull(Type::id()),
+                        'image_url' => Type::nonNull(Type::string()),
+                    ],
+                ])),
+                'price' => new ObjectType([
+                    'name' => 'Price',
+                    'fields' => [
+                        'id' => Type::nonNull(Type::id()),
+                        'amount' => Type::nonNull(Type::float()),
+                        'currency_label' => Type::nonNull(Type::string()),
+                        'currency_symbol' => Type::nonNull(Type::string()),
+                    ],
+                ]),
             ],
         ];
         parent::__construct($config);
     }
 }
+
 ?>
