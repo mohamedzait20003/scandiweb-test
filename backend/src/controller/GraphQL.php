@@ -30,7 +30,7 @@ class GraphQL {
 
             $schema = new Schema(
                 (new SchemaConfig())
-                ->setQuery($productSchema->getQueryType())
+                ->setQuery($combinedQueryType)
             );
 
             $rawInput = file_get_contents('php://input');
