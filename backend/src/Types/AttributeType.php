@@ -47,14 +47,8 @@ class AttributeType extends ObjectType {
             $stmt->bind_param('i', $attributeId);
             $stmt->execute();
             $result = $stmt->get_result();
-
-            $AttributeItems = [];
-            while ($row = $result->fetch_assoc()) {
-                $AttributeItems[] = $row;
-            }
-
-            error_log('AttributeItems: ' . print_r($AttributeItems, true));
-            return $AttributeItems;
+            
+            return $result->fetch_all(MYSQLI_ASSOC);
         } catch (\Exception $e) {
             error_log('Error: ' . $e->getMessage());
             throw new UserError('Internal server error: ' . $e->getMessage());

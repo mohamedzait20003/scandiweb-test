@@ -69,10 +69,7 @@ class ProductType extends ObjectType {
             $stmt->bind_param('s', $productId);
             $stmt->execute();
             $result = $stmt->get_result();
-            $galleryItems = $result->fetch_all(MYSQLI_ASSOC);
-            error_log('Fetched gallery items for product_id ' . $productId . ': ' . json_encode($galleryItems));
-    
-            return $galleryItems;
+            return $result->fetch_all(MYSQLI_ASSOC);
         } catch (\Exception $e) {
             error_log('Error: ' . $e->getMessage());
             throw new \Exception('Internal server error: ' . $e->getMessage());
@@ -128,10 +125,7 @@ class ProductType extends ObjectType {
             $stmt->execute();
             $result = $stmt->get_result();
 
-            $attributes = $result->fetch_all(MYSQLI_ASSOC);
-            error_log('Fetched attributes for product_id ' . $productId . ': ' . json_encode($attributes));
-
-            return $attributes;
+            return $result->fetch_all(MYSQLI_ASSOC);
         } catch (\Exception $e) {
             error_log('Error: ' . $e->getMessage());
             throw new \Exception('Internal server error: ' . $e->getMessage());
