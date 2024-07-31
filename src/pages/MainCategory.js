@@ -23,9 +23,20 @@ const Category = () => {
             image_url
           }
           price {
+            id
             amount
             currency_label
             currency_symbol
+          }
+          AttributeSets {
+            Id
+            name
+            type
+            Items {
+              id
+              name
+              value
+            }
           }
         }
       }

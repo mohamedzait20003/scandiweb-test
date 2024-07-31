@@ -11,7 +11,7 @@ const Category = ({ category }) => {
   const fetchProducts = useCallback(async () => {
     const endpoint = 'http://localhost:8000/graphql';
     const query = gql`
-      query getAllProducts($category_id: Int) {
+      query getProducts($category_id: Int!) {
         Products(category_id: $category_id) {
           Id
           name
@@ -23,9 +23,20 @@ const Category = ({ category }) => {
             image_url
           }
           price {
+            id
             amount
             currency_label
             currency_symbol
+          }
+          AttributeSets {
+            Id
+            name
+            type
+            Items {
+              id
+              name
+              value
+            }
           }
         }
       }
