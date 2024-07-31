@@ -1,12 +1,12 @@
 <?php
 namespace App\Schema;
+
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Config\DB;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Error\UserError;
-
 use App\Types\ProductType;
 use App\Types\OrderType;
 
@@ -23,7 +23,7 @@ class ProductSchema extends AbstractSchema {
                     'args' => [
                         'category_id' => Type::int()
                     ],
-                    'resolve' => function($root, $args) {
+                    'resolve' => function($root, $args, $context) {
                         return $this->fetchProducts($args['category_id'] ?? null);
                     }
                 ]
@@ -36,10 +36,8 @@ class ProductSchema extends AbstractSchema {
                 'createProduct' => [
                     'type' => new OrderType(),
                     'args' => [
-                        // Define arguments here
                     ],
                     'resolve' => function($root, $args) {
-                        // Define resolve function here
                     }
                 ]
             ]
@@ -53,46 +51,22 @@ class ProductSchema extends AbstractSchema {
             if (!$mysqli) {
                 throw new \Exception('Failed to connect to the database');
             }
-    
+
             $query = 'SELECT Id, name, inStock, description, brand FROM product';
-            if ($category_id) {
-                $category_id = $mysqli->real_escape_string($category_id);
-                $query .= " WHERE category_id = '$category_id'";
+            if ($category_id !== null) {
+                $query .= ' WHERE category_id = ?';
             }
-    
-            $result = $mysqli->query($query);
-            if (!$result) {
-                throw new \Exception('Database query error: ' . $mysqli->error);
+
+            $stmt = $mysqli->prepare($query);
+            if ($category_id !== null) {
+                $stmt->bind_param('i', $category_id);
             }
-    
-            $products = [];
-            while($row = $result->fetch_assoc()){
-                $productId = $row['Id'];
-    
-                $galleryResult = $mysqli->query("SELECT id, image_url FROM gallery WHERE product_id = '" . $mysqli->real_escape_string($productId) . "'");
-                if (!$galleryResult) {
-                    throw new \Exception('Gallery query error: ' . $mysqli->error);
-                }
-                $galleryItems = [];
-                while ($galleryRow = $galleryResult->fetch_assoc()) {
-                    $galleryItems[] = $galleryRow;
-                }
-                $row['gallery'] = $galleryItems;
-    
-                $priceResult = $mysqli->query("SELECT id, amount, currency_label, currency_symbol FROM price WHERE product_id = '" . $mysqli->real_escape_string($productId) . "'");
-                if (!$priceResult) {
-                    throw new \Exception('Price query error: ' . $mysqli->error);
-                }
-                $priceRow = $priceResult->fetch_assoc();
-                $row['price'] = $priceRow;
-    
-                $products[] = $row;
-            }
-    
-            return $products;
+            $stmt->execute();
+            $result = $stmt->get_result();
+            return $result->fetch_all(MYSQLI_ASSOC);
         } catch (\Exception $e) {
             error_log('Error: ' . $e->getMessage());
-            throw new UserError('Internal server error: ' . $e->getMessage());
+            throw new \Exception('Internal server error: ' . $e->getMessage());
         } finally {
             if ($mysqli && $mysqli->ping()) {
                 DB::closeConnection();
@@ -108,3 +82,4 @@ class ProductSchema extends AbstractSchema {
         return $this->mutationType;
     }
 }
+?>

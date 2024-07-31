@@ -1,6 +1,5 @@
 <?php
 namespace App\Schema;
-
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Config\DB;
@@ -20,36 +19,42 @@ class CategorySchema extends AbstractSchema {
                 'categories' => [
                     'type' => Type::listOf(new CategoryType()),
                     'resolve' => function() {
-                        try {
-                            $mysqli = DB::getConnection();
-                            if (!$mysqli) {
-                                throw new \Exception('Failed to connect to the database');
-                            }
-                    
-                            $result = $mysqli->query('SELECT id, name FROM category');
-                            
-                            if (!$result) {
-                                throw new \Exception('Database query error: ' . $mysqli->error);
-                            }
-                    
-                            $categories = [];
-                            while ($row = $result->fetch_assoc()) {
-                                $categories[] = $row;
-                            }
-
-                            error_log('Categories: ' . print_r($categories, true));
-                            DB::closeConnection();
-                            return $categories;
-                        } catch (\Exception $e) {
-                            error_log('Error in CategorySchema resolve: ' . $e->getMessage());
-                            error_log('Trace: ' . $e->getTraceAsString());
-                            throw new \Exception('Internal server error');
-                        }
+                        return $this->fetchCategories();
                     }
                 ]
             ]
         ]);
         $this->mutationType = null;
+    }
+
+    private function fetchCategories() {
+        $mysqli = null;
+        try {
+            $mysqli = DB::getConnection();
+            if (!$mysqli) {
+                throw new \Exception('Failed to connect to the database');
+            }
+    
+            $result = $mysqli->query('SELECT id, name FROM category');
+            
+            if (!$result) {
+                throw new \Exception('Database query error: ' . $mysqli->error);
+            }
+    
+            $categories = [];
+            while ($row = $result->fetch_assoc()) {
+                $categories[] = $row;
+            }
+
+            return $categories;
+        } catch (\Exception $e) {
+            error_log('Error: ' . $e->getMessage());
+            throw new UserError('Internal server error: ' . $e->getMessage());
+        } finally {
+            if ($mysqli && $mysqli->ping()) {
+                DB::closeConnection();
+            }
+        }
     }
 
     public function getQueryType(): ObjectType {

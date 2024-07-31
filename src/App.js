@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect } from 'react';
 import { request, gql } from 'graphql-request';
 import { Routes, Route } from 'react-router-dom';
@@ -56,7 +55,7 @@ function App() {
         <Route path="/" element={<MainCategory />} />
         {categories.map((category) => (
           <Route
-            key={category.Id}
+            key={category.id}
             path={`/${category.name}`} 
             element={<Category category={category} />}
           />
