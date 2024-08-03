@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux'
-import { toogleCart } from '../store/slices/CartSlice'
+import { toogleCart } from '../context/slices/CartSlice'
 
 const Cart = () => {
     const dispatch = useDispatch();

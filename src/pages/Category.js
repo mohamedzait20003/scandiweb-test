@@ -45,7 +45,6 @@ const Category = ({ category }) => {
     try {
       const variables = { category_id: parseInt(category.id, 10) };
       const data = await request(endpoint, query, variables);
-      console.log("Data:", data);
       if (data && data.Products) {
         setProducts(data.Products);
       } else {

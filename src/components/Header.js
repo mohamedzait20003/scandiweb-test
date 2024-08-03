@@ -4,17 +4,19 @@ import { Link, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 // Redux
-import { toogleCart } from '../store/slices/CartSlice'
+import { toogleCart } from '../context/slices/CartSlice'
 
 // Images
 import Logo from '../assets/Logo/Logo.png'
 
 const Header = ({ categories }) => {
+  const [state, setState] = useState(0);
   const [isCartOpen, setIsCartOpen] = useState(false);
+
   const location = useLocation();
   
   const { cartItems } = useSelector((state) => state.cart);
-  const cartQuantity = cartItems.lenght;
+  const cartQuantity = cartItems.length;
 
   const dispatch = useDispatch();
   const handleOpenCart = (state) => {
@@ -25,18 +27,29 @@ const Header = ({ categories }) => {
     handleOpenCart(isCartOpen);
   }, [isCartOpen]);
 
+  useEffect(() => {
+    if (location.pathname === `/`) {
+      setState(0);
+    } else {
+      const categoryIndex = categories.findIndex(category => `/${category.name}` === location.pathname);
+      if (categoryIndex !== -1) {
+        setState(categoryIndex + 1);
+      }
+    }
+  }, [location.pathname]);
+
   return (
     <header className='h-16 sticky bg-white shadow-sm z-30'>
       <div className='h-full relative mx-auto px-6 flex flex-row items-center justify-between'>
         <ul className='flex items-center list-none gap-12  ml-4'>
-          <li className={`p-4 ${location.pathname === `/` ? 'w-full border-b-2 border-green-400' : 'border-none'}`}>
-              <Link to={"/"} className={`text-lg font-semibold ${location.pathname === `/` ? 'text-green-400' : 'text-gray-900'}`} data-testid={location.pathname === `/` ? 'active-category-link' : 'category-link'} >
+          <li className={`p-4 ${state === 0 ? 'w-full border-b-2 border-green-400' : 'border-none'}`}>
+              <Link to={"/"} className={`text-lg font-semibold ${state === 0 ? 'text-green-400' : 'text-gray-900'}`} data-testid={state === 0 ? 'active-category-link' : 'category-link'} >
                 All
               </Link>
           </li>
-          {categories.map((category) => (
-            <li key={category.id} className={`p-4 ${location.pathname === `/${category.name}` ? 'w-full border-b-2 border-green-400' : 'border-none'}`} >
-              <Link to={`/${category.name}`} className={`text-lg font-semibold ${location.pathname === `/${category.name}` ? 'text-green-400' : 'text-gray-900'}`} data-testid={location.pathname === `/${category.name}` ? 'active-category-link' : 'category-link'} >
+          {categories.map((category, index) => (
+            <li key={category.id} className={`p-4 ${state === index+1 ? 'w-full border-b-2 border-green-400' : 'border-none'}`} >
+              <Link to={`/${category.name}`} className={`text-lg font-semibold ${state === index+1 ? 'text-green-400' : 'text-gray-900'}`} data-testid={state === index+1 ? 'active-category-link' : 'category-link'} >
                 {category.name}
               </Link>
             </li>
@@ -56,7 +69,7 @@ const Header = ({ categories }) => {
             </button>
             {
               cartQuantity > 0 ? (
-                <p className=' w-5 h-5 -top-1 -right-0 absolute flex items-center justify-center bg-black text-white rounded-full p-1'>cartQuantity</p>
+                <p className=' w-5 h-5 -top-1 -right-0 absolute flex items-center justify-center bg-black text-white rounded-full p-1'>{cartQuantity}</p>
               ) : null
             }
           </div>

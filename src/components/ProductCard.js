@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 // redux
 import { useDispatch } from 'react-redux';
-import { addItem } from '../store/slices/CartSlice';
+import { addItem } from '../context/slices/CartSlice';
 
 const ProductCard = ({ product }) => {
   const { Id, gallery, inStock, name, price } = product;
@@ -33,7 +33,7 @@ const ProductCard = ({ product }) => {
           <div className='flex flex-col'>
             <p>{name}</p>
             <p>
-              {price.currency_label === 'USD' ? '$' : price.currency_label}{price.amount}
+              {price.currency_symbol}{price.amount}
             </p>
           </div>
           {inStock && (

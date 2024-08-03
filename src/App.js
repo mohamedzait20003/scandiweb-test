@@ -11,7 +11,7 @@ import './App.css';
 import Header from './components/Header';
 import Cart from './components/Cart';
 
-import store from './store/store';
+import store from './context/store';
 
 function App() {
   const [categories, setCategories] = useState([]);
@@ -30,8 +30,6 @@ function App() {
     request(endpoint, query)
     .then(
       data => {
-        console.log(data);
-        console.log(data.categories);
         if (data && data.categories) {
           setCategories(data.categories);
         } else {
@@ -54,11 +52,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainCategory />} />
         {categories.map((category) => (
-          <Route
-            key={category.id}
-            path={`/${category.name}`} 
-            element={<Category category={category} />}
-          />
+          <Route key={category.id} path={`/${category.name}`} element={<Category category={category} />} />
         ))}
         <Route path='product/:productId' element={<Product />} />
       </Routes>
