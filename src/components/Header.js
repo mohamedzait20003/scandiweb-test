@@ -15,8 +15,7 @@ const Header = ({ categories }) => {
 
   const location = useLocation();
   
-  const { cartItems } = useSelector((state) => state.cart);
-  const cartQuantity = cartItems.length;
+  const { totalCount } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
   const handleOpenCart = (state) => {
@@ -68,8 +67,8 @@ const Header = ({ categories }) => {
               </svg>
             </button>
             {
-              cartQuantity > 0 ? (
-                <p className=' w-5 h-5 -top-1 -right-0 absolute flex items-center justify-center bg-black text-white rounded-full p-1'>{cartQuantity}</p>
+              totalCount > 0 ? (
+                <p className=' w-5 h-5 -top-1 -right-0 absolute flex items-center justify-center bg-black text-white rounded-full p-1'>{totalCount}</p>
               ) : null
             }
           </div>

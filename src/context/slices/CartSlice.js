@@ -4,6 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     isCartOpen: false,
     cartItems: [],
+    totalCount: 0,
+    totalMoney: 0,
 };
 
 // Cart Slice
@@ -11,44 +13,64 @@ const CartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        toogleCart: (state, action) => {
+        toogleCart: (state) => {
             state.isCartOpen = !state.isCartOpen;
         },
         addItem: (state, action) => {
-            const newItemId = action.payload.id;
+            const newItem = action.payload;
             const itemExists = state.cartItems.find(
-                item => item.id === newItemId
+                item => item.id === newItem.id && JSON.stringify(item.attributes) === JSON.stringify(newItem.attributes)
             );
 
             if(itemExists){
                 itemExists.quantity++;
             } else{
-                state.cartItems.push(action.payload);
+                state.cartItems.push({ ...newItem, quantity: 1 });
             }
-        },
-        removeItem: (state, action) => {
-            state.cartItems  = state.cartItems.filter(
-                item => item.id !== action.payload.id
-            );
+
+            state.totalCount++;
+            state.totalMoney += newItem.price.amount;
         },
         incrementItem: (state, action) => {
             state.cartItems = state.cartItems.map(item => {
-                if (item.id === action.payload) {
+                if (item.id === action.payload.id && JSON.stringify(item.attributes) === JSON.stringify(action.payload.attributes)) {
                    item.quantity++;
+                   state.totalCount++;
+                   state.totalMoney += item.price.amount;
                 }
                 return item;
             });
         },
         decrementItem: (state, action) => {
             state.cartItems = state.cartItems.map(item => {
-                if (item.id === action.payload.id) {
+                if (item.id === action.payload.id && JSON.stringify(item.attributes) === JSON.stringify(action.payload.attributes)) {
                     item.quantity--;
+                    state.totalCount--;
+                    state.totalMoney -= item.price.amount;
                 }
+                return item;
             })
-            .filer(item => item.quantity === 0);
+            .filter(item => item.quantity > 0);
         },
+        AttributeChange: (state, action) => {
+            const { id, attributes, changedAttributes } = action.payload;
+
+            const AttrItemExists = state.cartItems.find(
+                item => item.id === id && JSON.stringify(item.attributes) === JSON.stringify(changedAttributes)
+            );
+            const ItemIndex = state.cartItems.findIndex(
+                item => item.id === id && JSON.stringify(item.attributes) === JSON.stringify(attributes)
+            );
+
+            if (AttrItemExists && ItemIndex !== -1) {
+                AttrItemExists.quantity += state.cartItems[ItemIndex].quantity;
+                state.cartItems.splice(ItemIndex, 1);
+            } else if (ItemIndex !== -1) {
+                state.cartItems[ItemIndex].attributes = changedAttributes;
+            }
+        }
     },
 });
 
-export const { toogleCart, addItem, removeItem, incrementItem, decrementItem } = CartSlice.actions;
+export const { toogleCart, addItem, incrementItem, decrementItem, AttributeChange } = CartSlice.actions;
 export default CartSlice.reducer;

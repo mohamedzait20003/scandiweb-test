@@ -7,6 +7,7 @@ use App\Config\DB;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Error\UserError;
+
 use App\Types\ProductType;
 use App\Types\OrderType;
 
@@ -34,10 +35,16 @@ class ProductSchema extends AbstractSchema {
             'name' => 'Mutation',
             'fields' => [
                 'createProduct' => [
-                    'type' => new OrderType(),
-                    'args' => [
-                    ],
+                    'type' => new ObjectType([
+                        'name' => 'OrderResponse',
+                        'fields' => [
+                            'status' => Type::string(),
+                            'message' => Type::string(),
+                        ]
+                    ]),
+                    'args' => new OrderType(),
                     'resolve' => function($root, $args) {
+                        
                     }
                 ]
             ]

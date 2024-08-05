@@ -3,10 +3,14 @@ import React, {useEffect, useState} from 'react'
 import { useLocation } from 'react-router-dom';
 import parse from 'html-react-parser';
 
+// Redux
+import { useDispatch } from 'react-redux';
+import { addItem } from '../context/slices/CartSlice';
+
 const Product = () => {
   const location = useLocation();
   const { product } = location.state || {};
-  const { name, gallery, inStock, AttributeSets, price } = product;
+  const { Id, name, gallery, inStock, AttributeSets, price } = product;
   
   const [current, setCurrent] = useState(0);
   const handlePrevImage = () => {
@@ -30,6 +34,20 @@ const Product = () => {
       setAllSelected(true);
     }
   }, [selectedAttributes, AttributeSets]);
+
+  const dispatch = useDispatch();
+  const handleAdd = () => {
+    dispatch(addItem(
+      {
+        id: Id,
+        name: name,
+        price: price,
+        image: gallery[0].image_url,
+        attributeSets: AttributeSets,
+        attributes: selectedAttributes,
+      }
+    ));
+  }
 
   return (
     <div className='w-full h-[40rem] p-6'>
@@ -80,7 +98,7 @@ const Product = () => {
             <h3 className='text-3xl text-slate-800 font-semibold'>Price:</h3>
             <p className='text-xl text-slate-700 font-medium'> {price.currency_symbol}{price.amount}</p>
           </div>
-            <button className={`bg-green-400 mr-10 mt-5 p-5 rounded-sm text-white ${inStock && AllSelected ? '' : 'opacity-50 cursor-not-allowed'}`} >
+            <button className={`bg-green-400 mr-10 mt-5 p-5 rounded-sm text-white ${inStock && AllSelected ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={handleAdd} >
               Add To Cart
             </button>
           <div>

@@ -7,15 +7,24 @@ import { useDispatch } from 'react-redux';
 import { addItem } from '../context/slices/CartSlice';
 
 const ProductCard = ({ product }) => {
-  const { Id, gallery, inStock, name, price } = product;
+  const { Id, name, gallery, inStock, AttributeSets, price } = product;
 
   const navigate = useNavigate();
   const handleClick = () => {
     navigate(`/product/${Id}`, { state: { product } });
   };
 
+  const dispatch = useDispatch();
   const handleAdd = (e) => {
     e.stopPropagation();
+    dispatch(addItem({
+      id: Id,
+      name: name,
+      price: price,
+      image: gallery[0].image_url,
+      attributeSets: AttributeSets,
+      attributes: {},
+    }));
   };
 
   return (
