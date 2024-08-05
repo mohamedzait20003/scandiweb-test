@@ -1,6 +1,6 @@
 # Ecommerce small project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), Php, GraphQL
+This project was bootstrapped with ReactJS, Php, GraphQL
 
 ## Available Scripts
 
