@@ -11,12 +11,14 @@ use Throwable;
 
 use App\Schema\CategorySchema;
 use App\Schema\ProductSchema;
+use App\Schema\OrderSchema;
 
 class GraphQL {
     static public function handle() {
         try {
             $categorySchema = new CategorySchema();
             $productSchema = new ProductSchema();
+            $orderSchema = new OrderSchema();
 
             $combinedQueryFields = array_merge(
                 $categorySchema->getQueryType()->getFields(),
@@ -31,6 +33,7 @@ class GraphQL {
             $schema = new Schema(
                 (new SchemaConfig())
                 ->setQuery($combinedQueryType)
+                ->setMutation($orderSchema->getMutationType())
             );
 
             $rawInput = file_get_contents('php://input');

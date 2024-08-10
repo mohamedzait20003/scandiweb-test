@@ -68,9 +68,14 @@ const CartSlice = createSlice({
             } else if (ItemIndex !== -1) {
                 state.cartItems[ItemIndex].attributes = changedAttributes;
             }
+        },
+        emptyCart: (state) => {
+            state.cartItems = [];
+            state.totalCount = 0;
+            state.totalMoney = 0;
         }
     },
 });
 
-export const { toogleCart, addItem, incrementItem, decrementItem, AttributeChange } = CartSlice.actions;
+export const { toogleCart, addItem, incrementItem, decrementItem, AttributeChange, emptyCart } = CartSlice.actions;
 export default CartSlice.reducer;

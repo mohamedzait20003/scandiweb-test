@@ -1,6 +1,7 @@
 // Libraries
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { kebabCase } from 'lodash';
 
 // redux
 import { useDispatch } from 'react-redux';
@@ -28,7 +29,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className={`w-full relative container p-4 hover:shadow-xl group cursor-pointer`} onClick={handleClick}>
+    <div className={`w-full relative container p-4 hover:shadow-xl group cursor-pointer`} onClick={handleClick} data-testid={`product-${kebabCase(name)}`} >
       <div className='w-full flex flex-col items-center justify-center p-10'>
         <div className='relative p-6 mt-0 mb-5'>
           <img src={gallery[0].image_url} alt={name} className={`w-full h-60 z-10 ${!inStock ? 'grayscale cursor-not-allowed' : 'cursor-pointer'}`} />

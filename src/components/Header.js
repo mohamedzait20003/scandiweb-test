@@ -1,5 +1,5 @@
 // Libraries
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -18,13 +18,13 @@ const Header = ({ categories }) => {
   const { totalCount } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
-  const handleOpenCart = (state) => {
+  const handleOpenCart = useCallback((state) => {
     dispatch(toogleCart(state));
-  }
+  }, [dispatch]);
 
   useEffect(() => {
     handleOpenCart(isCartOpen);
-  }, [isCartOpen]);
+  }, [isCartOpen, handleOpenCart]);
 
   useEffect(() => {
     if (location.pathname === `/`) {
@@ -35,7 +35,7 @@ const Header = ({ categories }) => {
         setState(categoryIndex + 1);
       }
     }
-  }, [location.pathname]);
+  }, [location.pathname, categories]);
 
   return (
     <header className='h-16 sticky bg-white shadow-sm z-30'>

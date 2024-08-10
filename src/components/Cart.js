@@ -1,30 +1,68 @@
 // Libraries
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { request, gql } from 'graphql-request';
+import { toast } from 'react-toastify';
 
 // Components
 import CartItem from './CartItem'
 
 // Redux
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { toogleCart, emptyCart } from '../context/slices/CartSlice'
 
 const Cart = () => {
+    const dispatch = useDispatch();
     const { isCartOpen, cartItems, totalCount, totalMoney } = useSelector((state) => state.cart);
 
     const [AllSelected, setAllSelected] = useState(false);
-    const allAttributesChosen = () => {
+    const allAttributesChosen = useCallback(() => {
         return cartItems.every(item => {
             return item.attributeSets.every(set => {
                 return item.attributes.hasOwnProperty(set.Id);
             });
         });
-    };
+    }, [cartItems]);
     useEffect(() => {
         setAllSelected(allAttributesChosen());
-    }, [cartItems]);
+    }, [cartItems, allAttributesChosen]);
 
 
-    const handleOrder = () => {
+    const handleOrder = async () => {
+        const endpoint = 'http://localhost:8000/graphql';
+        const mutation = gql`
+            mutation CreateOrder($order: OrderInput!) {
+                createOrder(order: $order) {
+                    status
+                    message
+                }
+            }
+        `;
+
+        const order = {
+            total_quantity: totalCount,
+            total_price: totalMoney,
+            date: new Date().toISOString().split('T')[0],
+            items: cartItems.map(item => ({
+                product_id: item.id,
+                quantity: item.quantity,
+                price: item.price.amount,
+                attributes: Object.entries(item.attributes).map(([setId, choiceId]) => ({
+                    set_id: parseInt(setId),
+                    choice_id: parseInt(choiceId)
+                }))
+            }))
+        };
+
+        try {
+            const response = await request(endpoint, mutation, { order });
+            if (response.createOrder.status === 'success') {
+                dispatch(emptyCart());
+                toast.success('Order placed successfully!');
+                dispatch(toogleCart(false));
+            }
+        } catch (error) {
+            console.error('Error placing order:', error);
+        }
     };
 
     return (
@@ -46,13 +84,12 @@ const Cart = () => {
                                 }
                             </div>
                             <div className='w-full flex flex-col gap-3 py-3'>
-                                <div className='w-full flex flex-row items-center justify-between text-slate-800 font-semibold'>
+                                <div className='w-full flex flex-row items-center justify-between text-slate-800 font-semibold' data-testid='cart-total'>
                                     <h3>Total:</h3>
                                     <p>${Math.abs(totalMoney).toFixed(2)}</p>
                                 </div>
-                                <button className={`w-full bg-green-500 px-5 py-2 text-white ${AllSelected ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={handleOrder}>Place Order</button>
+                                <button className={`w-full bg-green-500 px-5 py-2 text-white ${AllSelected && cartItems.length > 0 ? '' : 'opacity-50 cursor-not-allowed'}`} disabled={!AllSelected || cartItems.length === 0} onClick={handleOrder}>Place Order</button>
                             </div>
-
                         </div>
                     </div>
                 </>

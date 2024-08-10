@@ -2,6 +2,7 @@
 import React, {useEffect, useState} from 'react'
 import { useLocation } from 'react-router-dom';
 import parse from 'html-react-parser';
+import { kebabCase } from 'lodash';
 
 // Redux
 import { useDispatch } from 'react-redux';
@@ -52,7 +53,7 @@ const Product = () => {
   return (
     <div className='w-full h-[40rem] p-6'>
       <div className='container h-full flex flex-row'>
-        <div className='w-4/6 h-full flex flex-row'>
+        <div className='w-4/6 h-full flex flex-row' data-testid='product-gallery'>
           { gallery.length > 1 ? (
               <div className="w-1/4 flex flex-col gap-5 max-h-[40rem] mr-2 overflow-hidden hover:overflow-y-auto">
                 {gallery.map((image, index) => (
@@ -78,7 +79,7 @@ const Product = () => {
           <div className='w-2/3 flex flex-col gap-8 '>
             {
               AttributeSets.map((attribute, index) => (
-                <div key={index} className='flex flex-col gap-2'>
+                <div key={index} className='flex flex-col gap-2' data-testid={`product-attribute-${kebabCase(attribute)}`} >
                   <h3 className='text-xl text-slate-800 font-semibold'>{attribute.name}:</h3>
                   <div className='flex flex-row gap-5 mt-4'>
                     {
@@ -98,10 +99,10 @@ const Product = () => {
             <h3 className='text-3xl text-slate-800 font-semibold'>Price:</h3>
             <p className='text-xl text-slate-700 font-medium'> {price.currency_symbol}{price.amount}</p>
           </div>
-            <button className={`bg-green-400 mr-10 mt-5 p-5 rounded-sm text-white ${inStock && AllSelected ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={handleAdd} >
+            <button className={`bg-green-400 mr-10 mt-5 p-5 rounded-sm text-white ${inStock && AllSelected ? '' : 'opacity-50 cursor-not-allowed'}`} onClick={handleAdd} disabled={!inStock || !AllSelected} data-testid='add-to-cart' >
               Add To Cart
             </button>
-          <div>
+          <div className='text-sm' data-testid='product-description' >
             {parse(product.description)}
           </div>
         </div>

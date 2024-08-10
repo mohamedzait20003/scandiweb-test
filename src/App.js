@@ -1,16 +1,24 @@
+// Libraries
 import React, { useState, useEffect } from 'react';
 import { request, gql } from 'graphql-request';
 import { Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 
+// Styles
+import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
+
+// pages
 import MainCategory from './pages/MainCategory';
 import Category from './pages/Category';
 import Product from './pages/Product';
 
-import './App.css';
+// Components
 import Header from './components/Header';
 import Cart from './components/Cart';
 
+// Redux
+import { Provider } from 'react-redux';
 import store from './context/store';
 
 function App() {
@@ -46,17 +54,20 @@ function App() {
   }, []);
 
   return (
-    <Provider store={store}>
-      <Header categories={categories} />
-      <Cart />
-      <Routes>
-        <Route path="/" element={<MainCategory />} />
-        {categories.map((category) => (
-          <Route key={category.id} path={`/${category.name}`} element={<Category category={category} />} />
-        ))}
-        <Route path='product/:productId' element={<Product />} />
-      </Routes>
-    </Provider>
+    <>
+      <ToastContainer />
+      <Provider store={store}>
+        <Header categories={categories} />
+        <Cart />
+        <Routes>
+          <Route path="/" element={<MainCategory />} />
+          {categories.map((category) => (
+            <Route key={category.id} path={`/${category.name}`} element={<Category category={category} />} />
+          ))}
+          <Route path='product/:productId' element={<Product />} />
+        </Routes>
+      </Provider>
+    </>
   );
 }
 
