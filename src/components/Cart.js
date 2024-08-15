@@ -70,7 +70,7 @@ const Cart = () => {
             {isCartOpen && (
                 <>
                     <div className='fixed inset-0 bg-gray-800 bg-opacity-50 z-10'></div>
-                    <div className='fixed top-18 right-5 w-96 min-h-24 max-h-svh bg-white shadow-sm p-4 z-50'>
+                    <div data-testid="cart-overlay" className='fixed top-18 right-5 w-96 min-h-24 max-h-svh bg-white shadow-sm p-4 z-50'>
                         <div className='flex flex-col'>
                             <div className='flex flex-row py-3 text-slate-800'>
                                 <h2 className='font-bold mr-3'>My Bag:</h2>
