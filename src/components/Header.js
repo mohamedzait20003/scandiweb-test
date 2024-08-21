@@ -1,13 +1,13 @@
 // Libraries
-import React, { useState, useEffect, useCallback } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Redux
-import { toogleCart } from '../context/slices/CartSlice'
+import { toogleCart } from '../context/slices/CartSlice';
 
 // Images
-import Logo from '../assets/Logo/Logo.png'
+import Logo from '../assets/Logo/Logo.png';
 
 const Header = ({ categories }) => {
   const [state, setState] = useState(0);
@@ -27,6 +27,7 @@ const Header = ({ categories }) => {
   }, [isCartOpen, handleOpenCart]);
 
   useEffect(() => {
+    console.log(categories);
     if (location.pathname === `/`) {
       setState(0);
     } else {
@@ -47,7 +48,7 @@ const Header = ({ categories }) => {
               </Link>
           </li>
           {categories.map((category, index) => (
-            <li key={category.id} className={`p-4 ${state === index+1 ? 'w-full border-b-2 border-green-400' : 'border-none'}`} >
+            <li className={`p-4 ${state === index+1 ? 'w-full border-b-2 border-green-400' : 'border-none'}`} >
               <Link to={`/${category.name}`} className={`text-lg font-semibold ${state === index+1 ? 'text-green-400' : 'text-gray-900'}`} data-testid={state === index+1 ? 'active-category-link' : 'category-link'} >
                 {category.name}
               </Link>
@@ -67,15 +68,15 @@ const Header = ({ categories }) => {
               </svg>
             </button>
             {
-              totalCount > 0 ? (
+              totalCount > 0 && (
                 <p className=' w-5 h-5 -top-1 -right-0 absolute flex items-center justify-center bg-black text-white rounded-full p-1'>{totalCount}</p>
-              ) : null
+              )
             }
           </div>
         </div>
       </div>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;

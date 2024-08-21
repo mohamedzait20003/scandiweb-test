@@ -10,27 +10,20 @@ import 'react-toastify/dist/ReactToastify.css';
 import Header from '../components/Header';
 import Cart from '../components/Cart';
 
+// Common
+import SummaryApi from '../common/index';
+
 const Home = () => {
     const [categories, setCategories] = useState([]);
 
     const fetchCategories = async () => {
-        const endpoint = 'http://localhost:8000/graphql';
-        const query = gql`
-          {
-            categories {
-              id
-              name  
-            }
-          }
-        `;
+        const query = gql`${SummaryApi.Categories.Query}`;
         
-        request(endpoint, query)
+        request(SummaryApi.Categories.URL, query)
         .then(
           data => {
             if (data && data.categories) {
               setCategories(data.categories);
-            } else {
-              console.error('Categories data is undefined');
             }
           }
         )

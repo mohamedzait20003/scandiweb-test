@@ -10,6 +10,9 @@ import CartItem from './CartItem'
 import { useSelector, useDispatch } from 'react-redux'
 import { toogleCart, emptyCart } from '../context/slices/CartSlice'
 
+// Common
+import SummaryApi from '../common/index'
+
 const Cart = () => {
     const dispatch = useDispatch();
     const { isCartOpen, cartItems, totalCount, totalMoney } = useSelector((state) => state.cart);
@@ -28,15 +31,7 @@ const Cart = () => {
 
 
     const handleOrder = async () => {
-        const endpoint = 'http://localhost:8000/graphql';
-        const mutation = gql`
-            mutation CreateOrder($order: OrderInput!) {
-                createOrder(order: $order) {
-                    status
-                    message
-                }
-            }
-        `;
+        const mutation = gql`${SummaryApi.OrderMake.Mutation}`;
 
         const order = {
             total_quantity: totalCount,
@@ -53,16 +48,15 @@ const Cart = () => {
             }))
         };
 
-        try {
-            const response = await request(endpoint, mutation, { order });
+        request(SummaryApi.OrderMake.URL, mutation, { order })
+        .then(response => {
             if (response.createOrder.status === 'success') {
                 dispatch(emptyCart());
                 toast.success('Order placed successfully!');
                 dispatch(toogleCart(false));
             }
-        } catch (error) {
-            console.error('Error placing order:', error);
-        }
+        })
+        .catch(error => console.error('Error placing order:', error));
     };
 
     return (

@@ -18,17 +18,17 @@ class ProductSchema extends AbstractSchema {
                 'Products' => [
                     'type' => Type::listOf(new ProductType()),
                     'args' => [
-                        'category_id' => Type::int()
+                        'category_name' => Type::string()
                     ],
                     'resolve' => function($root, $args, $context) {
-                        return $this->fetchProducts($args['category_id'] ?? null);
+                        return $this->fetchProducts($args['category_name'] ?? null);
                     }
                 ]
             ]
         ]);
     }
 
-    private function fetchProducts($category_id = null) {
+    private function fetchProducts($category_name = null) {
         $mysqli = null;
         try {
             $mysqli = DB::getConnection();
@@ -37,13 +37,13 @@ class ProductSchema extends AbstractSchema {
             }
 
             $query = 'SELECT Id, name, inStock, description, brand FROM product';
-            if ($category_id !== null) {
-                $query .= ' WHERE category_id = ?';
+            if ($category_name !== null) {
+                $query .= ' WHERE category_id IN (SELECT id FROM category WHERE Name = ?)';
             }
 
             $stmt = $mysqli->prepare($query);
-            if ($category_id !== null) {
-                $stmt->bind_param('i', $category_id);
+            if ($category_name !== null) {
+                $stmt->bind_param('s', $category_name);
             }
             $stmt->execute();
             $result = $stmt->get_result();

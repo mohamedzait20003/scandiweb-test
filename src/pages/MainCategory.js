@@ -5,54 +5,22 @@ import { request, gql } from 'graphql-request';
 // Components
 import ProductCard from '../components/ProductCard';
 
+// Common
+import SummaryApi from '../common/index';
+
 const Category = () => {
   const [products, setProducts] = useState([]);
 
   const fetchProducts = useCallback(async () => {
-    const endpoint = 'http://localhost:8000/graphql';
-    const query = gql`
-      query getAllProducts {
-        Products {
-          Id
-          name
-          inStock
-          description
-          brand
-          gallery {
-            id
-            image_url
-          }
-          price {
-            id
-            amount
-            currency_label
-            currency_symbol
-          }
-          AttributeSets {
-            Id
-            name
-            type
-            Items {
-              id
-              name
-              value
-            }
-          }
-        }
-      }
-    `;
+    const query = gql`${SummaryApi.AllProducts.Query}`;
 
-    try {
-      const data = await request(endpoint, query);
-      console.log("Data:", data);
+    request(SummaryApi.AllProducts.URL, query)
+    .then(data => {
       if (data && data.Products) {
         setProducts(data.Products);
-      } else {
-        console.error('Products data is undefined');
       }
-    } catch (error) {
-      console.error(error);
-    }
+    })
+    .catch(error => console.error(error));
   }, []);
 
   useEffect(() => {
