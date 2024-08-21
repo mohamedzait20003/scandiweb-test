@@ -40,23 +40,19 @@ class GraphQL {
             if ($rawInput === false) {
                 throw new RuntimeException('Failed to get php://input');
             }
-            error_log($rawInput);
 
             $input = json_decode($rawInput, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new RuntimeException('Invalid JSON input: ' . json_last_error_msg());
             }
-            error_log(print_r($input, true));
 
             $query = $input['query'] ?? null;
             if ($query === null) {
                 throw new RuntimeException('No query provided in the input');
             }
-            error_log($query);
 
             $variableValues = $input['variables'] ?? null;
-            error_log(print_r($variableValues, true));
-            
+
             $rootValue = ['prefix' => 'You said: '];
             $result = GraphQLBase::executeQuery($schema, $query, $rootValue, null, $variableValues);
             $output = $result->toArray();
@@ -70,8 +66,6 @@ class GraphQL {
                 ],
             ];
         }
-
-        error_log(print_r($output, true));
 
         header('Content-Type: application/json; charset=UTF-8');
         echo json_encode($output);
