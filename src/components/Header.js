@@ -18,7 +18,7 @@ const Header = ({ categories }) => {
   const dispatch = useDispatch();
 
   const handleCart = ()  => {
-    dispatch(toogleCart(state));
+    dispatch(toogleCart());
   };
 
   useEffect(() => {
