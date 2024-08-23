@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toogleCart, emptyCart } from '../context/slices/CartSlice'
 
 // Common
-import SummaryApi from '../common/index'
+import SummaryApi, { backendDomain } from '../common/index';
 
 const Cart = () => {
     const dispatch = useDispatch();
@@ -48,7 +48,7 @@ const Cart = () => {
             }))
         };
 
-        request(SummaryApi.OrderMake.URL, mutation, { order })
+        request(backendDomain, mutation, { order })
         .then(response => {
             if (response.createOrder.status === 'success') {
                 dispatch(emptyCart());

@@ -6,7 +6,7 @@ import { request, gql } from 'graphql-request';
 import ProductCard from '../components/ProductCard';
 
 // Common
-import SummaryApi from '../common/index';
+import SummaryApi, { backendDomain } from '../common/index';
 
 const Category = () => {
   const [products, setProducts] = useState([]);
@@ -14,7 +14,7 @@ const Category = () => {
   const fetchProducts = useCallback(async () => {
     const query = gql`${SummaryApi.AllProducts.Query}`;
 
-    request(SummaryApi.AllProducts.URL, query)
+    request(backendDomain, query)
     .then(data => {
       if (data && data.Products) {
         setProducts(data.Products);

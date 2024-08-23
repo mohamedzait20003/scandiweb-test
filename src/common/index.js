@@ -1,8 +1,7 @@
-const backendDomain = "http://localhost:8000/graphql";
+export const backendDomain = "http://localhost:8000/graphql";
 
 const SummaryApi = {
     Categories: {
-        URL: `${backendDomain}`,
         Query:`
             {
                 categories {
@@ -13,7 +12,6 @@ const SummaryApi = {
         `
     },
     AllProducts:{
-        URL: `${backendDomain}`,
         Query: `
             query getAllProducts {
                 Products {
@@ -47,7 +45,6 @@ const SummaryApi = {
         `
     },
     CategoryProducts: {
-        URL: `${backendDomain}`,
         Query: `
             query getProducts($category_name: String!) {
                 Products(category_name: $category_name) {
@@ -81,7 +78,6 @@ const SummaryApi = {
         `
     },
     OrderMake: {
-        URL: `${backendDomain}`,
         Mutation: `
             mutation CreateOrder($order: OrderInput!) {
                 createOrder(order: $order) {
