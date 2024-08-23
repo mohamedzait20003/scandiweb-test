@@ -1,5 +1,5 @@
-import React, { useState, useEffect, Fragment } from 'react'
-import { Outlet } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, Fragment } from 'react'
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { request, gql } from 'graphql-request';
 import { ToastContainer } from 'react-toastify';
 
@@ -15,8 +15,10 @@ import SummaryApi from '../common/index';
 
 const Home = () => {
     const [categories, setCategories] = useState([]);
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const fetchCategories = async () => {
+    const fetchCategories = useCallback(async () => {
         const query = gql`${SummaryApi.Categories.Query}`;
         
         request(SummaryApi.Categories.URL, query)
@@ -28,12 +30,18 @@ const Home = () => {
           }
         )
         .catch(error => console.error(error));
-    };
-      
+    }, []);
+    
+    const StartDirect = useCallback(() => {
+      if (location.pathname === '/') {
+        navigate('/all');
+      }
+    }, [location.pathname, navigate]);
     
     useEffect(() => {
-        fetchCategories();
-    }, []);
+      fetchCategories();
+      StartDirect();
+    }, [fetchCategories, StartDirect]);
     
     return (
         <>

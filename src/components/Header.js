@@ -21,7 +21,7 @@ const Header = ({ categories }) => {
   };
 
   useEffect(() => {
-    if (location.pathname === `/`) {
+    if (location.pathname === `/all`) {
       setState(0);
     } else {
       const categoryIndex = categories.findIndex(category => `/${category.name}` === location.pathname);
@@ -36,7 +36,7 @@ const Header = ({ categories }) => {
       <div className='h-full relative mx-auto px-6 flex flex-row items-center justify-between'>
         <ul className='flex items-center list-none gap-12  ml-4'>
           <li className={`p-4 ${state === 0 ? 'w-full border-b-2 border-green-400' : 'border-none'}`}>
-              <Link to={"/"} className={`text-lg font-semibold ${state === 0 ? 'text-green-400' : 'text-gray-900'}`} data-testid={state === 0 ? 'active-category-link' : 'category-link'} >
+              <Link to={"/all"} className={`text-lg font-semibold ${state === 0 ? 'text-green-400' : 'text-gray-900'}`} data-testid={state === 0 ? 'active-category-link' : 'category-link'} >
                 All
               </Link>
           </li>
