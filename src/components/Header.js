@@ -23,11 +23,12 @@ const Header = ({ categories }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    handleOpenCart(isCartOpen);
+    if (isCartOpen !== false) {
+      handleOpenCart(isCartOpen);
+    }
   }, [isCartOpen, handleOpenCart]);
 
   useEffect(() => {
-    console.log(categories);
     if (location.pathname === `/`) {
       setState(0);
     } else {
@@ -48,7 +49,7 @@ const Header = ({ categories }) => {
               </Link>
           </li>
           {categories.map((category, index) => (
-            <li className={`p-4 ${state === index+1 ? 'w-full border-b-2 border-green-400' : 'border-none'}`} >
+            <li key={index} className={`p-4 ${state === index+1 ? 'w-full border-b-2 border-green-400' : 'border-none'}`} >
               <Link to={`/${category.name}`} className={`text-lg font-semibold ${state === index+1 ? 'text-green-400' : 'text-gray-900'}`} data-testid={state === index+1 ? 'active-category-link' : 'category-link'} >
                 {category.name}
               </Link>
