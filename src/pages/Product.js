@@ -5,7 +5,7 @@ import parse from 'html-react-parser';
 
 // Redux
 import { useDispatch } from 'react-redux';
-import { addItem } from '../context/slices/CartSlice';
+import { addItem, toogleCart } from '../context/slices/CartSlice';
 
 const Product = () => {
   const location = useLocation();
@@ -47,6 +47,7 @@ const Product = () => {
         attributes: selectedAttributes,
       }
     ));
+    dispatch(toogleCart());
   }
 
   return (
