@@ -7,7 +7,7 @@ import { request, gql } from 'graphql-request';
 import ProductCard from '../components/ProductCard';
 
 // Common
-import SummaryApi, { backendDomain } from '../common/index';
+import SummaryApi from '../common';
 
 const Category = () => {
   const { category } = useParams();
@@ -17,13 +17,14 @@ const Category = () => {
     const query = gql`${SummaryApi.CategoryProducts.Query}`;
 
     const variables = { category_name: category };
-    request(backendDomain, query, variables)
+    request(SummaryApi.CategoryProducts.URL, query, variables)
     .then(data => {
       if (data && data.Products) {
         setProducts(data.Products);
       }
     })
     .catch(error => console.error(error));
+      
   }, [category]);
 
   useEffect(() => {

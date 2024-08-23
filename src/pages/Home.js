@@ -11,7 +11,7 @@ import Header from '../components/Header';
 import Cart from '../components/Cart';
 
 // Common
-import SummaryApi, { backendDomain } from '../common/index';
+import SummaryApi from '../common/index';
 
 const Home = () => {
     const [categories, setCategories] = useState([]);
@@ -21,7 +21,7 @@ const Home = () => {
     const fetchCategories = useCallback(async () => {
         const query = gql`${SummaryApi.Categories.Query}`;
         
-        request(backendDomain, query)
+        request(SummaryApi.Categories.URL, query)
         .then(
           data => {
             if (data && data.categories) {

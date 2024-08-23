@@ -1,8 +1,9 @@
-const backendDomain = process.env.REACT_APP_BACKEND_DOMAIN || "http://localhost:8000";
+const backendDomain = "http://localhost:8000/graphql";
 
 const SummaryApi = {
     Categories: {
-        Query: `
+        URL: `${backendDomain}`,
+        Query:`
             {
                 categories {
                 id
@@ -11,7 +12,8 @@ const SummaryApi = {
             }
         `
     },
-    AllProducts: {
+    AllProducts:{
+        URL: `${backendDomain}`,
         Query: `
             query getAllProducts {
                 Products {
@@ -45,6 +47,7 @@ const SummaryApi = {
         `
     },
     CategoryProducts: {
+        URL: `${backendDomain}`,
         Query: `
             query getProducts($category_name: String!) {
                 Products(category_name: $category_name) {
@@ -78,6 +81,7 @@ const SummaryApi = {
         `
     },
     OrderMake: {
+        URL: `${backendDomain}`,
         Mutation: `
             mutation CreateOrder($order: OrderInput!) {
                 createOrder(order: $order) {
@@ -89,5 +93,4 @@ const SummaryApi = {
     }
 };
 
-export { backendDomain };
 export default SummaryApi;
