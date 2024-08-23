@@ -33,7 +33,7 @@ const Header = ({ categories }) => {
   }, [location.pathname, categories]);
 
   return (
-    <header className='h-16 sticky bg-white shadow-sm z-30'>
+    <header className='h-16 sticky top-0 bg-white shadow-sm z-50'>
       <div className='h-full relative mx-auto px-6 flex flex-row items-center justify-between'>
         <ul className='flex items-center list-none gap-12  ml-4'>
           <li className={`p-4 ${state === 0 ? 'w-full border-b-2 border-green-400' : 'border-none'}`}>
