@@ -2,7 +2,6 @@
 import React, {useEffect, useState} from 'react'
 import { useLocation } from 'react-router-dom';
 import parse from 'html-react-parser';
-import { kebabCase } from 'lodash';
 
 // Redux
 import { useDispatch } from 'react-redux';
