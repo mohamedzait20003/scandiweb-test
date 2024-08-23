@@ -38,7 +38,6 @@ const CartItem = ({ item }) => {
                                     {
                                         set.Items.map((item) => (
                                             <button key={item.id} onClick={() => {handleAttributeChange(set.Id, item.id)}}  className={`rounded-sm ${Attributes[set.Id] === item.id ? (set.type === 'text' ? 'bg-black text-white' : 'border-2 border-green-500') : ''} ${set.type === 'swatch' ? 'p-3 swatch' : 'px-2 py-1'}`} style={set.type === 'swatch' ? { '--swatch-color': item.value } : {}}  data-testid={`cart-item-attribute-${kebabCase(set.name.toLowerCase())}-${item.value}${Attributes[set.Id] === item.id ? '-selected' : ''}`} >
-                                                {console.log(`cart-item-attribute-${kebabCase(set.name.toLowerCase())}-${item.value}${Attributes[set.Id] === item.id ? '-selected' : ''}`)}
                                                 {set.type === 'text' ? item.value : ''}
                                             </button>
                                         ))
