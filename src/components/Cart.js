@@ -8,7 +8,7 @@ import CartItem from './CartItem'
 
 // Redux
 import { useSelector, useDispatch } from 'react-redux'
-import { toogleCart, emptyCart } from '../context/slices/CartSlice'
+import { emptyCart, closeCart } from '../context/slices/CartSlice'
 
 // Common
 import SummaryApi from '../common/index'
@@ -53,7 +53,7 @@ const Cart = () => {
             if (response.createOrder.status === 'success') {
                 dispatch(emptyCart());
                 toast.success('Order placed successfully!');
-                dispatch(toogleCart(false));
+                dispatch(closeCart(false));
             }
         })
         .catch(error => console.error('Error placing order:', error));

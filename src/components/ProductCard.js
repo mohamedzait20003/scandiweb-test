@@ -5,7 +5,7 @@ import { kebabCase } from 'lodash';
 
 // redux
 import { useDispatch } from 'react-redux';
-import { addItem, toogleCart } from '../context/slices/CartSlice';
+import { addItem, openCart } from '../context/slices/CartSlice';
 
 const ProductCard = ({ product }) => {
   const { Id, name, gallery, inStock, AttributeSets, price } = product;
@@ -26,7 +26,7 @@ const ProductCard = ({ product }) => {
       attributeSets: AttributeSets,
       attributes: {},
     }));
-    dispatch(toogleCart());
+    dispatch(openCart());
   };
 
   return (

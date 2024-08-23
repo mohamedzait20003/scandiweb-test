@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
 
 // Redux
-import { toogleCart } from '../context/slices/CartSlice';
+import { openCart, closeCart } from '../context/slices/CartSlice';
 
 // Images
 import Logo from '../assets/Logo/Logo.png';
@@ -14,11 +14,15 @@ const Header = ({ categories }) => {
   const [state, setState] = useState(0);
   const location = useLocation();
   
-  const { totalCount } = useSelector((state) => state.cart);
+  const { totalCount, isCartOpen } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
   const handleCart = ()  => {
-    dispatch(toogleCart());
+    if(isCartOpen){
+      dispatch(closeCart());
+    } else {
+      dispatch(openCart());
+    }
   };
 
   useEffect(() => {
