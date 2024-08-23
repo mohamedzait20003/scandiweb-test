@@ -78,12 +78,12 @@ const Product = () => {
           <div className='w-2/3 flex flex-col gap-8 '>
             {
               AttributeSets.map((attribute, index) => (
-                <div key={index} className='flex flex-col gap-2' data-testid={`product-attribute-$${attribute})}`} >
+                <div key={index} className='flex flex-col gap-2' data-testid={`product-attribute-${attribute.name}`} >
                   <h3 className='text-xl text-slate-800 font-semibold'>{attribute.name}:</h3>
                   <div className='flex flex-row gap-5 mt-4'>
                     {
                       attribute.Items.map((item) => (
-                        <button key={item.id} onClick={() => {handleChoseAttribute(attribute.Id, item.id)}}  className={`p-4 rounded-sm ${selectedAttributes[attribute.Id] === item.id ? (attribute.type === 'text' ? 'bg-black text-white' : 'border-2 border-green-500') : ''} ${attribute.type === 'swatch' ? 'swatch' : ''}`} style={attribute.type === 'swatch' ? { '--swatch-color': item.value } : {}} >
+                        <button key={item.id} onClick={() => {handleChoseAttribute(attribute.Id, item.id)}}  className={`p-4 rounded-sm ${selectedAttributes[attribute.Id] === item.id ? (attribute.type === 'text' ? 'bg-black text-white' : 'border-2 border-green-500') : ''} ${attribute.type === 'swatch' ? 'swatch' : ''}`} style={attribute.type === 'swatch' ? { '--swatch-color': item.value } : {}} data-testid={`product-attribute-${attribute.name}-${item.value}`} >
                           {attribute.type === 'text' ? item.value : ''}
                         </button>
                       ))
