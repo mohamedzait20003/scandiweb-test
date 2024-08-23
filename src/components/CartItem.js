@@ -32,12 +32,12 @@ const CartItem = ({ item }) => {
                 <div className='flex flex-col mt-5 gap-5'>
                     {
                         item.attributeSets.map((set, index) => (
-                            <div key={index} className='flex flex-col'  data-testid={`cart-item-attribute-${kebabCase(set.name)}`} >
+                            <div key={index} className='flex flex-col'  data-testid={`cart-item-attribute-${kebabCase(set.name.toLowerCase())}`} >
                                 <h3 className='text-slate-700 font-mono font-medium'>{set.name}</h3>
                                 <div className='flex flex-row gap-2 mt-2'>
                                     {
                                         set.Items.map((item) => (
-                                            <button key={item.id} onClick={() => {handleAttributeChange(set.Id, item.id)}}  className={`rounded-sm ${Attributes[set.Id] === item.id ? (set.type === 'text' ? 'bg-black text-white' : 'border-2 border-green-500') : ''} ${set.type === 'swatch' ? 'p-3 swatch' : 'px-2 py-1'}`} style={set.type === 'swatch' ? { '--swatch-color': item.value } : {}}  data-testid={`cart-item-attribute-${kebabCase(set.name)}-${kebabCase(item.value)}${Attributes[set.Id] === item.id ? '-selected' : ''}`} >
+                                            <button key={item.id} onClick={() => {handleAttributeChange(set.Id, item.id)}}  className={`rounded-sm ${Attributes[set.Id] === item.id ? (set.type === 'text' ? 'bg-black text-white' : 'border-2 border-green-500') : ''} ${set.type === 'swatch' ? 'p-3 swatch' : 'px-2 py-1'}`} style={set.type === 'swatch' ? { '--swatch-color': item.value } : {}}  data-testid={`cart-item-attribute-${kebabCase(set.name.toLowerCase())}-${kebabCase(item.value.toLowerCase())}${Attributes[set.Id] === item.id ? '-selected' : ''}`} >
                                                 {set.type === 'text' ? item.value : ''}
                                             </button>
                                         ))
