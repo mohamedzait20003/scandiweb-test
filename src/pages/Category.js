@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { request, gql } from 'graphql-request';
+import { capitalize } from 'lodash';
 
 // Components
 import ProductCard from '../components/ProductCard';
@@ -34,7 +35,7 @@ const Category = () => {
   return (
     <section className='w-full h-full'>
       <div className='flex flex-col py-10'>
-        <h1 className='ml-10 text-3xl'>{category}</h1>
+        <h1 className='ml-10 text-3xl'>{capitalize(category)}</h1>
         <div className='w-full mt-20 px-8 grid grid-cols-3 items-center justify-items-center gap-8'>
           {products.map((product) => (
             <ProductCard key={product.Id} product={product} />

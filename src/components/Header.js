@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { capitalize } from 'lodash';
 
 // Redux
 import { toogleCart } from '../context/slices/CartSlice';
@@ -43,7 +44,7 @@ const Header = ({ categories }) => {
           {categories.map((category, index) => (
             <li key={index} className={`p-4 ${state === index+1 ? 'w-full border-b-2 border-green-400' : 'border-none'}`} >
               <Link to={`/${category.name}`} className={`text-lg font-semibold ${state === index+1 ? 'text-green-400' : 'text-gray-900'}`} data-testid={state === index+1 ? 'active-category-link' : 'category-link'} >
-                {category.name}
+                {capitalize(category.name)}
               </Link>
             </li>
           ))}
