@@ -1,4 +1,4 @@
-export const backendDomain = "http://localhost:8000/graphql";
+export const backendDomain = process.env.REACT_APP_BACKEND_DOMAIN;
 
 const SummaryApi = {
     Categories: {
