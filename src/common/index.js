@@ -1,4 +1,4 @@
-const backendDomain = "https://ec297374f3596a110603208cb8b5b344.serveo.net/graphql";
+const backendDomain = "https://d7e74017b4753a994f0611869b6726a9.serveo.net/graphql";
 
 const SummaryApi = {
     Categories: {
