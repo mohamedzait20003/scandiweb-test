@@ -1,8 +1,8 @@
-export const backendDomain = process.env.REACT_APP_BACKEND_DOMAIN;
+const backendDomain = process.env.REACT_APP_BACKEND_DOMAIN || "http://localhost:8000";
 
 const SummaryApi = {
     Categories: {
-        Query:`
+        Query: `
             {
                 categories {
                 id
@@ -11,7 +11,7 @@ const SummaryApi = {
             }
         `
     },
-    AllProducts:{
+    AllProducts: {
         Query: `
             query getAllProducts {
                 Products {
@@ -89,4 +89,5 @@ const SummaryApi = {
     }
 };
 
+export { backendDomain };
 export default SummaryApi;
