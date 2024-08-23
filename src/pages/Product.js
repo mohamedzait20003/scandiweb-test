@@ -79,7 +79,7 @@ const Product = () => {
           <div className='w-2/3 flex flex-col gap-8 '>
             {
               AttributeSets.map((attribute, index) => (
-                <div key={index} className='flex flex-col gap-2' data-testid={`product-attribute-${kebabCase(attribute.toLowerCase())}`} >
+                <div key={index} className='flex flex-col gap-2' data-testid={`product-attribute-${kebabCase(attribute)}`} >
                   <h3 className='text-xl text-slate-800 font-semibold'>{attribute.name}:</h3>
                   <div className='flex flex-row gap-5 mt-4'>
                     {
