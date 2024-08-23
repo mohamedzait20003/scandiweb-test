@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     isCartOpen: false,
+    OpenVerify: false,
     cartItems: [],
     totalCount: 0,
     totalMoney: 0,
@@ -13,11 +14,20 @@ const CartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        openCart: (state) => {
-            state.isCartOpen = true;
+        toggleCart: (state) => {
+            if(!state.isCartOpen){
+                state.isCartOpen = true;
+            } else {
+                if(state.OpenVerify){
+                    state.isCartOpen = false;
+                    state.OpenVerify = false;
+                } else {
+                    state.isCartOpen = false;
+                }
+            }
         },
-        closeCart: (state) => {
-            state.isCartOpen = false;
+        openCart: (state) => {
+            state.OpenVerify = true;
         },
         addItem: (state, action) => {
             const newItem = action.payload;
@@ -80,5 +90,5 @@ const CartSlice = createSlice({
     },
 });
 
-export const { openCart, closeCart, addItem, incrementItem, decrementItem, AttributeChange, emptyCart } = CartSlice.actions;
+export const { toggleCart, openCart, addItem, incrementItem, decrementItem, AttributeChange, emptyCart } = CartSlice.actions;
 export default CartSlice.reducer;

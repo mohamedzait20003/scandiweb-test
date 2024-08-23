@@ -8,14 +8,14 @@ import CartItem from './CartItem'
 
 // Redux
 import { useSelector, useDispatch } from 'react-redux'
-import { emptyCart, closeCart } from '../context/slices/CartSlice'
+import { emptyCart, toggleCart } from '../context/slices/CartSlice'
 
 // Common
 import SummaryApi from '../common/index'
 
 const Cart = () => {
     const dispatch = useDispatch();
-    const { isCartOpen, cartItems, totalCount, totalMoney } = useSelector((state) => state.cart);
+    const { isCartOpen, OpenVerify, cartItems, totalCount, totalMoney } = useSelector((state) => state.cart);
 
     const [AllSelected, setAllSelected] = useState(false);
     const allAttributesChosen = useCallback(() => {
@@ -30,7 +30,7 @@ const Cart = () => {
     }, [cartItems, allAttributesChosen]);
 
     const handleCloseCart = () => {
-        dispatch(closeCart());
+        dispatch(toggleCart());
     }
 
     const handleOrder = async () => {
@@ -56,7 +56,7 @@ const Cart = () => {
             if (response.createOrder.status === 'success') {
                 dispatch(emptyCart());
                 toast.success('Order placed successfully!');
-                dispatch(closeCart(false));
+                dispatch(toggleCart());
             }
         })
         .catch(error => console.error('Error placing order:', error));
@@ -64,7 +64,7 @@ const Cart = () => {
 
     return (
         <>
-            {isCartOpen && (
+            {(isCartOpen || OpenVerify) && (
                 <>
                     <div className='fixed inset-0 bg-gray-800 bg-opacity-50 z-10' onClick={handleCloseCart}></div>
                     <div data-testid="cart-overlay" className='fixed top-18 right-5 w-96 min-h-24 max-h-svh bg-white shadow-sm p-4 z-50'>

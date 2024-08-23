@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
 
 // Redux
-import { openCart } from '../context/slices/CartSlice';
+import { toggleCart } from '../context/slices/CartSlice';
 
 // Images
 import Logo from '../assets/Logo/Logo.png';
@@ -18,7 +18,7 @@ const Header = ({ categories }) => {
   const dispatch = useDispatch();
 
   const handleCart = ()  => {
-    dispatch(openCart());
+    dispatch(toggleCart());
   };
 
   useEffect(() => {
