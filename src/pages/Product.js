@@ -93,7 +93,6 @@ const Product = () => {
                 </div>
               ))
             }
-
           </div>
           <div className='flex flex-col gap-5'>
             <h3 className='text-3xl text-slate-800 font-semibold'>Price:</h3>

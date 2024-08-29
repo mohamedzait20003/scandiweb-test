@@ -18,13 +18,20 @@ const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const handleAdd = (e) => {
     e.stopPropagation();
+    const initialAttributes = {};
+    AttributeSets.forEach(attribute => {
+      if (attribute.Items.length > 0) {
+        initialAttributes[attribute.Id] = attribute.Items[0].id;
+      }
+    });
+
     dispatch(addItem({
       id: Id,
       name: name,
       price: price,
       image: gallery[0].image_url,
       attributeSets: AttributeSets,
-      attributes: {},
+      attributes: initialAttributes,
     }));
     dispatch(openCart());
   };
